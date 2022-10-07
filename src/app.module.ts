@@ -8,9 +8,7 @@ import { JogadoresModule } from './jogadores/jogadores.module';
       'mongodb+srv://admin:XzpOKbZcTqZohu8r@cluster0.slukmih.mongodb.net/smartranking?retryWrites=true&w=majority',
       {
         useNewUrlParser: true,
-        useCreateIndex: true,
         useUnifiedTopology: true,
-        useFindAndModify: false,
       },
     ),
     JogadoresModule,
