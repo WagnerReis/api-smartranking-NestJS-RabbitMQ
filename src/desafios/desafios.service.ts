@@ -52,7 +52,7 @@ export class DesafiosService {
     const newDesafio = {
       ...criarDesafioDto,
       categoria: solicitanteRegistrado.categoria,
-      dataHoraSolicitacao: new Date(),
+      dataHoraSolicitado: new Date(),
       status: DesafioStatus.PENDENTE,
     };
 
