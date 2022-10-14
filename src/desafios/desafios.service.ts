@@ -59,4 +59,31 @@ export class DesafiosService {
     const desafioCriado = new this.desafioModel(newDesafio);
     return await desafioCriado.save();
   }
+
+  async consultarTodosDesafios(): Promise<Desafio[]> {
+    const desafios = await this.desafioModel
+      .find()
+      .populate('solicitante')
+      .populate('jogadores')
+      .populate('partida');
+    return desafios;
+  }
+
+  async consultarDesafiosDeUmJogador(params: string[]): Promise<Desafio[]> {
+    const idJogador = params['idJogador'];
+
+    const desafioEncontrado = await this.desafioModel
+      .find()
+      .where('jogadores')
+      .in(idJogador)
+      .populate('solicitante')
+      .populate('jogadores')
+      .populate('partida');
+
+    if (!desafioEncontrado.length) {
+      throw new NotFoundException(`Desafio não encontrado!`);
+    }
+
+    return desafioEncontrado;
+  }
 }

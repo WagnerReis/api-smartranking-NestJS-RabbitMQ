@@ -2,10 +2,11 @@ import {
   Body,
   Controller,
   Post,
+  Get,
+  Param,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { CriarCategoriaDto } from 'src/categorias/dtos/criar-categoria.dto';
 import { DesafiosService } from './desafios.service';
 import { CriarDesafioDto } from './dtos/criar-desafio.dto';
 import { Desafio } from './interfaces/desafio.interface';
@@ -20,5 +21,17 @@ export class DesafiosController {
     @Body() criarDesafioDto: CriarDesafioDto,
   ): Promise<Desafio> {
     return await this.desafiosService.criarDesafio(criarDesafioDto);
+  }
+
+  @Get()
+  async consultarTodosDesafios(): Promise<Desafio[] | Desafio> {
+    return await this.desafiosService.consultarTodosDesafios();
+  }
+
+  @Get('/:idJogador')
+  async consultarDesafioPorJogador(
+    @Param() params: string[],
+  ): Promise<Desafio[] | Desafio> {
+    return await this.desafiosService.consultarDesafiosDeUmJogador(params);
   }
 }
