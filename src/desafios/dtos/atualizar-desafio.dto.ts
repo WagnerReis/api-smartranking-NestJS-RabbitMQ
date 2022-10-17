@@ -1,5 +1,5 @@
 import { IsDateString, IsEnum, IsNotEmpty } from 'class-validator';
-import { DesafioAtualizarStatus } from '../desafio-atualizar-status.enum';
+import { DesafioAtualizarStatus } from '../interfaces/desafio-atualizar-status.enum';
 
 export class AtualizarDesafioDto {
   @IsNotEmpty()

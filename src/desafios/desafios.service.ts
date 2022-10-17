@@ -7,15 +7,17 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CategoriasService } from 'src/categorias/categorias.service';
 import { JogadoresService } from 'src/jogadores/jogadores.service';
-import { DesafioStatus } from './desafio-status.enum';
+import { AtribuirDesafioPartidaDto } from 'src/desafios/dtos/atribuir-desafio-partida.dto';
+import { DesafioStatus } from './interfaces/desafio-status.enum';
 import { AtualizarDesafioDto } from './dtos/atualizar-desafio.dto';
 import { CriarDesafioDto } from './dtos/criar-desafio.dto';
-import { Desafio } from './interfaces/desafio.interface';
+import { Desafio, Partida } from './interfaces/desafio.interface';
 
 @Injectable()
 export class DesafiosService {
   constructor(
     @InjectModel('Desafio') private readonly desafioModel: Model<Desafio>,
+    @InjectModel('Partida') private readonly partidaModel: Model<Partida>,
     private readonly jogadoresService: JogadoresService,
     private readonly categoriasService: CategoriasService,
   ) {}
@@ -114,5 +116,37 @@ export class DesafiosService {
     }
 
     return desafioEncontrado;
+  }
+
+  async atribuirDesafioPartida(
+    _id: string,
+    atribuirDesafioPartidaDto: AtribuirDesafioPartidaDto,
+  ): Promise<void> {
+    const desafioEncontrado = await this.encontrarDesafio(_id);
+
+    const { def } = atribuirDesafioPartidaDto;
+
+    const vencedorValido = desafioEncontrado.jogadores.some((jogador) =>
+      jogador._id.equals(def),
+    );
+
+    if (!vencedorValido) {
+      throw new BadRequestException(`Vencedor nao participou do desafio`);
+    }
+
+    const partidaCriada = new this.partidaModel(atribuirDesafioPartidaDto);
+    partidaCriada.categoria = desafioEncontrado.categoria;
+    partidaCriada.jogadores = desafioEncontrado.jogadores;
+
+    const resultado = await partidaCriada.save();
+
+    desafioEncontrado.status = DesafioStatus.REALIZADO;
+
+    desafioEncontrado.partida = resultado._id;
+
+    await this.desafioModel.findOneAndUpdate(
+      { _id },
+      { $set: desafioEncontrado },
+    );
   }
 }
