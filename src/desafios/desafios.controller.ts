@@ -6,8 +6,11 @@ import {
   Param,
   UsePipes,
   ValidationPipe,
+  Put,
 } from '@nestjs/common';
+import { ValidacaoParametrosPipe } from 'src/common/pipes/validacao-parametros.pipe';
 import { DesafiosService } from './desafios.service';
+import { AtualizarDesafioDto } from './dtos/atualizar-desafio.dto';
 import { CriarDesafioDto } from './dtos/criar-desafio.dto';
 import { Desafio } from './interfaces/desafio.interface';
 
@@ -33,5 +36,14 @@ export class DesafiosController {
     @Param() params: string[],
   ): Promise<Desafio[] | Desafio> {
     return await this.desafiosService.consultarDesafiosDeUmJogador(params);
+  }
+
+  @Put('/:_id')
+  @UsePipes(ValidationPipe)
+  async atualizarDesafio(
+    @Body() atualizarDesafioDto: AtualizarDesafioDto,
+    @Param('_id', ValidacaoParametrosPipe) _id: string,
+  ): Promise<void> {
+    await this.desafiosService.atualizarDesafio(_id, atualizarDesafioDto);
   }
 }

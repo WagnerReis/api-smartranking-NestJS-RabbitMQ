@@ -8,6 +8,7 @@ import { Model } from 'mongoose';
 import { CategoriasService } from 'src/categorias/categorias.service';
 import { JogadoresService } from 'src/jogadores/jogadores.service';
 import { DesafioStatus } from './desafio-status.enum';
+import { AtualizarDesafioDto } from './dtos/atualizar-desafio.dto';
 import { CriarDesafioDto } from './dtos/criar-desafio.dto';
 import { Desafio } from './interfaces/desafio.interface';
 
@@ -85,5 +86,18 @@ export class DesafiosService {
     }
 
     return desafioEncontrado;
+  }
+
+  async atualizarDesafio(
+    _id: string,
+    atualizarDesafioDto: AtualizarDesafioDto,
+  ): Promise<void> {
+    const desafioEncontrado = await this.desafioModel.findOne({ _id });
+
+    if (!desafioEncontrado) {
+      throw new NotFoundException('Desafio não encontrado!');
+    }
+
+    await this.desafioModel.updateOne({ _id }, { $set: atualizarDesafioDto });
   }
 }
