@@ -7,6 +7,7 @@ import {
   UsePipes,
   ValidationPipe,
   Put,
+  Delete,
 } from '@nestjs/common';
 import { ValidacaoParametrosPipe } from 'src/common/pipes/validacao-parametros.pipe';
 import { DesafiosService } from './desafios.service';
@@ -45,5 +46,13 @@ export class DesafiosController {
     @Param('_id', ValidacaoParametrosPipe) _id: string,
   ): Promise<void> {
     await this.desafiosService.atualizarDesafio(_id, atualizarDesafioDto);
+  }
+
+  @Delete('/:_id')
+  @UsePipes(ValidationPipe)
+  async deletarDesafio(
+    @Param('_id', ValidacaoParametrosPipe) _id: string,
+  ): Promise<void> {
+    await this.desafiosService.deletarDesafio(_id);
   }
 }

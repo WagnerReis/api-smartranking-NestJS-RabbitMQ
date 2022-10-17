@@ -92,12 +92,27 @@ export class DesafiosService {
     _id: string,
     atualizarDesafioDto: AtualizarDesafioDto,
   ): Promise<void> {
+    await this.encontrarDesafio(_id);
+
+    await this.desafioModel.updateOne({ _id }, { $set: atualizarDesafioDto });
+  }
+
+  async deletarDesafio(_id: string): Promise<void> {
+    await this.encontrarDesafio(_id);
+
+    await this.desafioModel.updateOne(
+      { _id },
+      { $set: { status: 'CANCELADO' } },
+    );
+  }
+
+  async encontrarDesafio(_id: string): Promise<Desafio> {
     const desafioEncontrado = await this.desafioModel.findOne({ _id });
 
     if (!desafioEncontrado) {
       throw new NotFoundException('Desafio não encontrado!');
     }
 
-    await this.desafioModel.updateOne({ _id }, { $set: atualizarDesafioDto });
+    return desafioEncontrado;
   }
 }
