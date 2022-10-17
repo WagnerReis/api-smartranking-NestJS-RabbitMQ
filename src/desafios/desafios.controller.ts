@@ -57,7 +57,7 @@ export class DesafiosController {
     await this.desafiosService.deletarDesafio(_id);
   }
 
-  @Put('/atribuirDesafioPartida/:_id')
+  @Post('/atribuirDesafioPartida/:_id')
   @UsePipes(ValidationPipe)
   async atribuirDesafioPartida(
     @Body() atribuirDesafioPartida: AtribuirDesafioPartidaDto,
