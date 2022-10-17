@@ -94,9 +94,16 @@ export class DesafiosService {
     _id: string,
     atualizarDesafioDto: AtualizarDesafioDto,
   ): Promise<void> {
-    await this.encontrarDesafio(_id);
+    const desafioEncontrado = await this.encontrarDesafio(_id);
 
-    await this.desafioModel.updateOne({ _id }, { $set: atualizarDesafioDto });
+    if (atualizarDesafioDto.status) {
+      desafioEncontrado.dataHoraResposta = new Date();
+    }
+
+    desafioEncontrado.status = atualizarDesafioDto.status;
+    desafioEncontrado.dataHoraDesafio = atualizarDesafioDto.dataHoraDesafio;
+
+    await this.desafioModel.updateOne({ _id }, { $set: desafioEncontrado });
   }
 
   async deletarDesafio(_id: string): Promise<void> {
